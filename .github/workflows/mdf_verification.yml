@@ -80,4 +80,4 @@ jobs:
       with:
         name: upload test artifacts
         path: |
-          ${{github.workspace}}/tests/.mdf_verification/*.png
+          ${{github.workspace}}/*.png
