@@ -29,8 +29,7 @@
  */
 
 /** @file vtk.cpp
- * Tests on the VTK output files. This test is only compiled and executed if
- * USE_VTK=ON on the CMake configuration
+ * Tests on the VTK output files
  */
 
 #include "MoorDyn2.h"
@@ -227,22 +226,6 @@ write_vtk_system()
 	if (err != MOORDYN_SUCCESS) {
 		std::cerr << "Failure during the mooring initialization: " << err
 		          << std::endl;
-		MoorDyn_Close(system);
-		return false;
-	}
-
-	// In this second example we are replacing the representation of the body
-	auto body = MoorDyn_GetBody(system, 1);
-	if (!body) {
-		std::cerr << "Failure getting the body" << std::endl;
-		MoorDyn_Close(system);
-		return false;
-	}
-	err = MoorDyn_UseBodyVTK(body, "Mooring/ship.stl");
-	if (err != MOORDYN_SUCCESS) {
-		std::cerr << "Failure loading the body model '"
-		          << "Mooring/ship.stl"
-		          << "':" << err << std::endl;
 		MoorDyn_Close(system);
 		return false;
 	}

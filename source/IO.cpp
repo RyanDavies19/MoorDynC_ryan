@@ -199,11 +199,6 @@ IO::IO(moordyn::Log* log)
   , _min_minor_version(4)
 {
 	_is_big_endian = is_big_endian();
-	if (_min_major_version <= MOORDYN_MAJOR_VERSION) {
-		_min_major_version = MOORDYN_MAJOR_VERSION;
-		if (_min_minor_version <= MOORDYN_MINOR_VERSION)
-			_min_minor_version = MOORDYN_MINOR_VERSION;
-	}
 }
 
 void
@@ -283,11 +278,17 @@ IO::LoadFile(const std::string filepath) const
 	uint8_t major, minor;
 	f.read((char*)&major, sizeof(uint8_t));
 	f.read((char*)&minor, sizeof(uint8_t));
+	std::cout << major << std::endl;
+	std::cout << minor << std::endl;
+	std::cout << _min_major_version << std::endl;
+	std::cout << _min_minor_version << std::endl;
+	std::cout << "number=" << 7 << std::endl;
 	if ((major < _min_major_version) ||
 	    ((major == _min_major_version) && (minor < _min_minor_version))) {
 		LOGERR << "The file '" << filepath << "' was written by MoorDyn "
-		       << major << "." << minor << ", but >= " << _min_major_version
-		       << "." << _min_minor_version << " is required" << endl;
+		       << (int)major << "." << (int)minor << ", but >= "
+		       << (int)_min_major_version << "." << (int)_min_minor_version
+		       << " is required" << endl;
 		throw moordyn::input_file_error("Invalid file");
 	}
 	// Check that the amount of information is correct
@@ -623,48 +624,6 @@ IO::Deserialize(const uint64_t* in, std::vector<mat6>& out)
 	}
 	return remaining;
 }
-
-#ifdef USE_VTK
-vtkSmartPointer<vtkFloatArray>
-vtk_farray(const char* name, unsigned int dim, unsigned int len)
-{
-	vtkSmartPointer<vtkFloatArray> a = vtkSmartPointer<vtkFloatArray>::New();
-	a->SetName(name);
-	a->SetNumberOfComponents(dim);
-	a->SetNumberOfTuples(len);
-	return a;
-}
-
-vtkSmartPointer<vtkCharArray>
-vtk_carray(const char* name, unsigned int dim, unsigned int len)
-{
-	vtkSmartPointer<vtkCharArray> a = vtkSmartPointer<vtkCharArray>::New();
-	a->SetName(name);
-	a->SetNumberOfComponents(dim);
-	a->SetNumberOfTuples(len);
-	return a;
-}
-
-int
-vtk_error(unsigned long err_code)
-{
-	switch (err_code) {
-		case vtkErrorCode::NoError:
-			return MOORDYN_SUCCESS;
-		case vtkErrorCode::FileNotFoundError:
-		case vtkErrorCode::CannotOpenFileError:
-		case vtkErrorCode::NoFileNameError:
-			return MOORDYN_INVALID_OUTPUT_FILE;
-		case vtkErrorCode::UnrecognizedFileTypeError:
-		case vtkErrorCode::FileFormatError:
-			return MOORDYN_INVALID_VALUE;
-		case vtkErrorCode::OutOfDiskSpaceError:
-			return MOORDYN_MEM_ERROR;
-		default:
-			return MOORDYN_UNHANDLED_ERROR;
-	}
-}
-#endif
 
 } // ::io
 

@@ -15,10 +15,10 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # Used to host cibuildwheel
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.x' 
 
@@ -36,7 +36,7 @@ jobs:
             python -m pip install -U pip setuptools
             python setup.py sdist
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         id: build_wheels
         with:
           name: python-wheels-sdist
@@ -46,7 +46,7 @@ jobs:
     name: Build Linux_x86_64
     uses: FloatingArrayDesign/MoorDyn/.github/workflows/python-wheels-emulated.yml@master
     with:
-      os: '["ubuntu-22.04"]'
+      os: '["ubuntu-latest"]'
       arch: "x86_64"
     secrets: inherit
 
@@ -56,14 +56,6 @@ jobs:
     with:
       os: '["windows-latest"]'
       arch: "AMD64"
-    secrets: inherit
-
-  build_MacOS_x86_64:
-    name: Build MacOS_x86_64
-    uses: FloatingArrayDesign/MoorDyn/.github/workflows/python-wheels-emulated.yml@master
-    with:
-      os: '["macOS-13"]'
-      arch: "x86_64"
     secrets: inherit
 
   build_MacOS_arm64:
@@ -135,16 +127,16 @@ jobs:
 
   publish:
     runs-on: ${{ matrix.os }}
-    needs: [build_wheels, build_Linux_x86_64, build_Windows_AMD64, build_MacOS_x86_64, build_MacOS_arm64, build_Linux_i686, build_Linux_aarch64, build_Linux_ppc64le, build_Linux_s390x, test_Linux_x86_64, test_Windows_AMD64, test_MacOS_arm64]
+    needs: [build_wheels, build_Linux_x86_64, build_Windows_AMD64, build_MacOS_arm64, build_Linux_i686, build_Linux_aarch64, build_Linux_ppc64le, build_Linux_s390x, test_Linux_x86_64, test_Windows_AMD64, test_MacOS_arm64]
     strategy:
         matrix:
             os: [ubuntu-22.04]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: dist/
           pattern: python-wheels-*
@@ -158,3 +150,4 @@ jobs:
           password: ${{ secrets.MOORDYN_PYPI_API }}
           repository-url: https://upload.pypi.org/legacy/
           skip-existing: true
+        if:  github.ref == 'refs/heads/master'
