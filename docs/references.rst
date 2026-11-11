@@ -107,6 +107,11 @@ Updated MoorDyn-OpenFOAM Coupling:
   library." Ocean Engineering, vol. 303, Jul. 2024. <https://doi.org/10.1016/j.oceaneng.2024.117697>`_
 
 
+Empirical VIV coefficient tuning based on tank testing:
+
+ `Wei-Ying Wong, Ta-Chih Hung, Lei Zuo, "VIV Response of Dynamic Power Cable Under Regular Waves", Proceedings of the ASME 2026 45th International Conference on Ocean, Offshore and Arctic 
+ Engineering. Volume 7A: Ocean Renewable Energy. Tokyo, Japan. June 7-12, 2026. V07AT09A003. ASME. <https://doi.org/10.1115/OMAE2026-175864>`_
+
 The Fortran version of MoorDyn is available as a module inside of OpenFAST:
   
   https://openfast.readthedocs.io/en/main/
